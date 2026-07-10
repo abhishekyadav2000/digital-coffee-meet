@@ -58,7 +58,7 @@ This repo ships with a GitHub Actions workflow (`.github/workflows/deploy.yml`) 
 4. Push to `main` (or re-run the workflow). Within ~1 minute your site is live at:
    `https://<your-username>.github.io/digital-coffee-meet/`
 
-The Vite `base` is already set to `"./"`, so all assets resolve correctly on a project-page path.
+The Vite `base` is set to `/digital-coffee-meet/` for GitHub Pages builds (via the `GITHUB_PAGES` env in CI) and `/` for other hosts like Vercel.
 
 ## 🛠 Tech
 
