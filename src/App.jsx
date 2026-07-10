@@ -24,7 +24,10 @@ const CSS = `
 
 .drink-tile{ transition:all .25s cubic-bezier(.34,1.4,.5,1); border:1px solid var(--glass-brd); background:rgba(255,244,228,.035); cursor:pointer; }
 .drink-tile:hover{ transform:translateY(-3px) scale(1.02); background:rgba(255,244,228,.07); }
-.drink-tile.active{ border-color:currentColor; background:rgba(255,244,228,.08); box-shadow:0 10px 30px -14px currentColor; }
+.drink-tile.active{ border-color:var(--tile-accent,var(--gold)); background:rgba(255,244,228,.08); box-shadow:0 10px 30px -14px var(--tile-accent,var(--gold)); }
+.drink-tag{ font-size:10px; text-transform:uppercase; letter-spacing:.08em; border-radius:999px; padding:2px 8px; }
+.drink-tag--gold{ color:var(--gold); background:rgba(217,169,78,.08); border:1px solid rgba(217,169,78,.28); }
+.drink-tag--matcha{ background:rgba(255,244,228,.05); border:1px solid rgba(255,244,228,.1); }
 
 .btn{ transition:all .2s ease; border:1px solid transparent; font-weight:600; letter-spacing:.02em; }
 .btn:active{ transform:scale(.965); }
@@ -91,7 +94,6 @@ const CSS = `
 .clock-num{ font-size:clamp(32px, 9vw, 44px); }
 .mug-svg{ width:min(78vw, 360px); }
 .clock-pos{ top:44%; }
-.done-pos{ top:67%; }
 .min-h-mug{ min-height:440px; }
 .hero-lh{ line-height:1.05; }
 .t-15{ font-size:15px; }
@@ -173,8 +175,12 @@ function HeaderLogo() {
   );
 }
 
+/* Drink tile/tag accents: gold for readability on dark UI; Matcha keeps its green */
+const drinkTileAccent = (d) => (d.id === "matcha" ? d.liquidHi : "var(--gold)");
+
 /* ---------------- CoffeeSelector ---------------- */
 function CoffeeSelector({ drink, onSelect, disabled }) {
+  const isMatcha = drink.id === "matcha";
   return (
     <section className="glass-card p-4 sm:p-5">
       <h2 className="eyebrow mb-3" style={{color:"var(--cream-dim)"}}>Their drink</h2>
@@ -182,7 +188,7 @@ function CoffeeSelector({ drink, onSelect, disabled }) {
         {DRINKS.map((d) => (
           <button key={d.id} onClick={() => onSelect(d)} disabled={disabled}
             className={`drink-tile rounded-xl px-1.5 py-2.5 flex flex-col items-center gap-1 ${drink.id===d.id?"active":""} ${disabled?"opacity-50 cursor-not-allowed":""}`}
-            style={{ color: d.liquidHi }} title={d.note} aria-pressed={drink.id===d.id}>
+            style={{ "--tile-accent": drinkTileAccent(d) }} title={d.note} aria-pressed={drink.id===d.id}>
             <span className="w-6 h-6 rounded-full border" style={{ background:`linear-gradient(180deg, ${d.foam||d.liquidHi} 0 28%, ${d.liquid} 32%)`, borderColor:"rgba(243,231,211,.25)" }} />
             <span className="t-10 font-medium leading-tight text-center" style={{color:"var(--cream)"}}>{d.name}</span>
           </button>
@@ -191,8 +197,9 @@ function CoffeeSelector({ drink, onSelect, disabled }) {
       <p className="mt-3 text-xs italic" style={{color:"var(--cream-dim)"}}>{drink.note}</p>
       <div className="flex flex-wrap gap-1.5 mt-2.5">
         {drink.aroma.map((a) => (
-          <span key={a} className="text-[10px] uppercase tracking-wider rounded-full px-2 py-0.5"
-            style={{ color: drink.liquidHi, background: "rgba(255,244,228,.05)", border: "1px solid rgba(255,244,228,.1)" }}>
+          <span key={a}
+            className={`drink-tag ${isMatcha ? "drink-tag--matcha" : "drink-tag--gold"}`}
+            style={isMatcha ? { color: drink.liquidHi } : undefined}>
             {a}
           </span>
         ))}
@@ -373,15 +380,6 @@ function GlassMugTimer({ drink, level, remainingMs, status, urgent }) {
           </div>
         </div>
       </div>
-
-      {/* finished message */}
-      {status === "done" && (
-        <div className="absolute left-1/2 -translate-x-1/2 done-pos z-10 fade-up text-center w-max" style={{maxWidth:"92vw"}}>
-          <div className="dcm-display shimmer-text text-xl sm:text-2xl font-semibold">Coffee finished. Pitch delivered.</div>
-          <div className="dcm-display italic text-sm mt-2" style={{color:"var(--cream)"}}>“{drink.fortune}”</div>
-          <div className="text-[11px] mt-1.5 uppercase tracking-[.2em]" style={{color:"var(--cream-dim)"}}>Your {drink.name} fortune</div>
-        </div>
-      )}
     </div>
   );
 }
@@ -688,6 +686,13 @@ export default function App() {
                 <button onClick={pause} className="btn btn-ghost rounded-full px-4 py-1.5 text-xs">⏸ Pause</button>
               )}
             </div>
+            {status === "done" && (
+              <div className="text-center mt-5 px-4 fade-up" style={{maxWidth:"420px"}}>
+                <div className="dcm-display shimmer-text text-xl sm:text-2xl font-semibold">Coffee finished. Pitch delivered.</div>
+                <div className="dcm-display italic text-sm sm:text-base mt-2.5 leading-relaxed" style={{color:"var(--cream)"}}>“{drink.fortune}”</div>
+                <div className="eyebrow mt-3">Your {drink.name} fortune</div>
+              </div>
+            )}
             {focusMode && (
               <div className="text-center mt-4 fade-up" style={{maxWidth:"520px"}}>
                 {pitch.title && <div className="dcm-display text-xl font-semibold">{pitch.title}</div>}
