@@ -90,6 +90,8 @@ const CSS = `
 
 .eyebrow{ font-size:11px; text-transform:uppercase; letter-spacing:.22em; color:var(--cream-dim); }
 .sublabel{ font-size:10.5px; text-transform:uppercase; letter-spacing:.24em; color:var(--cream-dim); }
+.header-credit{ font-size:10px; letter-spacing:.04em; color:rgba(201,185,159,.42); }
+.header-handle{ font-size:10px; letter-spacing:.06em; color:rgba(217,169,78,.82); }
 .clock-label{ font-size:9.5px; text-transform:uppercase; letter-spacing:.3em; }
 .clock-num{ font-size:clamp(32px, 9vw, 44px); }
 .mug-svg{ width:min(78vw, 360px); }
@@ -166,10 +168,14 @@ function HeaderLogo() {
       <div>
         <div className="dcm-display font-semibold tracking-wide t-15 sm:text-base leading-tight">DIGITAL COFFEE MEET</div>
         <div className="sublabel" style={{color:"var(--cream-dim)"}}>Pitch-timer café</div>
+        <div className="header-credit mt-0.5">developed by Abhishek Yadav</div>
       </div>
-      <div className="ml-auto hidden sm:flex items-center gap-2 text-xs" style={{color:"var(--cream-dim)"}}>
-        <span className="w-1.5 h-1.5 rounded-full" style={{background:"var(--leaf)", boxShadow:"0 0 8px var(--leaf)"}} />
-        Bar is open
+      <div className="ml-auto hidden sm:flex flex-col items-end gap-0.5">
+        <div className="flex items-center gap-2 text-xs" style={{color:"var(--cream-dim)"}}>
+          <span className="w-1.5 h-1.5 rounded-full" style={{background:"var(--leaf)", boxShadow:"0 0 8px var(--leaf)"}} />
+          Bar is open
+        </div>
+        <div className="header-handle">@CurioMicShow</div>
       </div>
     </header>
   );
